@@ -23,6 +23,28 @@ npm run preview
 
 Open **http://127.0.0.1:4173**. `build/` contains the static site and can also be served by a local static HTTP server. Do not open the HTML directly with `file://`. The preview and development ports have separate local histories.
 
+## Production deployment
+
+The live site is **https://buttery.wtf/personality/**, listed on the buttery project page as **manyfold personality test**. The repository is [buttery-x3/personality-test](https://github.com/buttery-x3/personality-test).
+
+After committing and pushing updates to `main`, run this from your local PowerShell terminal:
+
+```powershell
+ssh hetzner-server "sudo -iu flamehorn bash /home/flamehorn/personality-test/deploy.sh"
+```
+
+Or, when logged into the server as `flamehorn`:
+
+```bash
+cd /home/flamehorn/personality-test
+./deploy.sh
+# Equivalent: npm run deploy:production
+```
+
+The script pulls `main`, installs locked dependencies, runs checks/tests, builds for `/personality`, publishes the static files, reloads the `personality-test` PM2 process, verifies its HTTP response, and saves PM2's process list for reboots. It stages the build before publishing and keeps older hashed assets available for visitors with an open page. It refuses concurrent deployments, the wrong Unix user, a non-`main` branch, or tracked local edits.
+
+See [deployment details](docs/DEPLOYMENT.md) for the Caddy route, hub registration, runtime settings, and troubleshooting.
+
 ## What is implemented
 
 - 72 original, naturally mixed questions with **533 unequal weighted mappings** across **36 dimensions**.
